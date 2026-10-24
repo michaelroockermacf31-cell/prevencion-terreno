@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Denuncias (acceso restringido)</title>
+<style>
+:root{--bg:#0f172a;--card:#1e293b;--in:#0f172a;--tx:#e2e8f0;--mu:#94a3b8;--bd:#334155;--bl:#3b82f6;--rd:#ef4444;--gr:#10b981;--ye:#f59e0b;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:light){:root:not([data-theme="dark"]){--bg:#f1f5f9;--card:#fff;--in:#f8fafc;--tx:#0f172a;--mu:#475569;--bd:#cbd5e1}}
+:root[data-theme="dark"]{--bg:#0f172a}
+*{box-sizing:border-box;margin:0;padding:0;font-family:system-ui,sans-serif}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{background:var(--bg);color:var(--tx);padding-bottom:30px}
+header{background:var(--card);padding:14px;text-align:center;font-weight:700;border-bottom:2px solid var(--bl)}
+.tabs{display:flex;overflow-x:auto;background:var(--card)}
+.tab{flex:1 0 auto;padding:12px 14px;background:none;border:0;border-bottom:3px solid transparent;color:var(--mu);font-weight:700;font-size:.85rem}
+.tab.on{color:var(--bl);border-bottom-color:var(--bl)}
+.pg{display:none;padding:14px}.pg.on{display:block}
+.card{background:var(--card);border:1px solid var(--bd);border-radius:10px;padding:14px;margin-bottom:14px}
+h2{font-size:1.1rem;margin-bottom:8px}h3{font-size:.95rem;color:var(--bl);margin:12px 0 4px}
+p,li{font-size:.9rem;line-height:1.5;color:var(--mu)}ul{padding-left:18px}
+label{display:block;margin-top:10px;font-size:.85rem;font-weight:700;color:var(--mu)}
+input,select,textarea{width:100%;padding:10px;border-radius:8px;border:1px solid var(--bd);background:var(--in);color:var(--tx);margin:5px 0;font-size:1rem}
+.btn{width:100%;padding:12px;border:0;border-radius:8px;font-weight:700;font-size:1rem;background:var(--bl);color:#fff;margin-top:10px}
+.btn.g{background:var(--gr)}.btn.y{background:var(--ye);color:#000}.btn.s{background:#64748b}
+.row{display:flex;gap:10px}.row>*{flex:1}
+.box{background:var(--in);border-left:4px solid var(--gr);border-radius:8px;padding:12px;margin-top:10px;white-space:pre-wrap;font-size:.95rem;line-height:1.5;color:var(--tx)}
+.chk{display:flex;gap:10px;align-items:center;padding:8px 0;border-bottom:1px solid var(--bd);font-size:.92rem;color:var(--tx)}
+.chk input{width:20px;height:20px;margin:0}
+canvas{width:100%;height:150px;background:#fff;border-radius:8px;touch-action:none;display:block}
+.timer{font-size:2.4rem;font-weight:800;text-align:center;margin:8px 0}
+.al{padding:10px;border-radius:8px;margin-top:10px;font-size:.9rem}
+.al.r{background:#ef444433;color:var(--tx);border:1px solid var(--rd)}.al.v{background:#10b98133;color:var(--tx);border:1px solid var(--gr)}.al.a{background:#f59e0b33;color:var(--tx);border:1px solid var(--ye)}
+.fl{display:flex;align-items:center;gap:8px;border-bottom:1px solid var(--bd);padding:6px 0;font-size:.88rem;color:var(--tx)}
+.fl img{height:34px;background:#fff;border-radius:4px}
+#imp{display:none}
+@media print{body>*:not(#imp){display:none!important}#imp{display:block;background:#fff;padding:8mm;font-size:12px}#imp *{color:#000!important}#imp img{height:46px}#imp table{width:100%;border-collapse:collapse;margin-bottom:10px}#imp td,#imp th{border:1px solid #000;padding:4px;text-align:left}#imp pre{white-space:pre-wrap;font-family:inherit;margin:8px 0}}
+</style>
+</head>
+<body>
+<header>Denuncias · acceso restringido</header>
+<div class="tabs"><button class="tab on" data-p="karin">Ley Karin</button><button class="tab" data-p="falsa">Denuncias falsas</button></div>
+
+<!-- KARIN -->
+<div id="karin" class="pg on">
+<div class="card">
+<h2>Recepción de denuncia (Ley Karin)</h2>
+<p>Toda denuncia se recibe y se tramita. Esta ficha solo ayuda a ordenar la información; no decide si la denuncia es creíble.</p>
+<label>Fecha y hora del hecho</label><input type="datetime-local" id="k-f">
+<label>Lugar</label><input id="k-l" placeholder="Ej: Obra, piso 3">
+<label>Persona denunciada (cargo)</label><input id="k-d">
+<label>Testigos (nombre y cargo)</label><input id="k-t">
+<label>Relato de los hechos</label><textarea id="k-r" rows="4"></textarea>
+<label>¿Existen pruebas (mensajes, fotos, documentos)?</label>
+<select id="k-p"><option value="no">No / no sabe</option><option value="si">Sí</option></select>
+<button class="btn" onclick="karin()">Verificar datos completos</button>
+<div id="k-o"></div>
+</div>
+<div class="card"><h3>Qué hacer al recibirla</h3><ul>
+<li>Recibirla siempre, por escrito, aunque falten datos.</li>
+<li>Adoptar medidas de resguardo para la persona denunciante (separar espacios, reorganizar turnos, apoyo).</li>
+<li>Derivar a la Inspección del Trabajo o investigar internamente, dentro de los plazos legales.</li>
+<li>Mantener confidencialidad y no tomar represalias.</li></ul>
+<p style="margin-top:6px">Verifica plazos y procedimiento exactos en la Ley 21.643 y con la Dirección del Trabajo.</p></div>
+</div>
+
+<!-- FALSAS -->
+<div id="falsa" class="pg">
+<div class="card">
+<h2>Denuncias infundadas o de mala fe</h2>
+<p>La ley sanciona la denuncia hecha con conocimiento de su falsedad, pero eso solo se puede concluir <b>al terminar la investigación</b>. Una denuncia que no se logra probar no es necesariamente falsa. Si se castiga a quien denuncia sin esa conclusión, puede constituir represalia.</p>
+<div class="al a">Presunción de buena fe: mientras la investigación no concluya otra cosa, quien denuncia actúa de buena fe.</div>
+<h3>Qué debe quedar acreditado antes de hablar de mala fe</h3>
+<div id="fl"></div>
+<div id="fo" class="al a">Marca los puntos que ya están documentados.</div>
+<h3>Mientras tanto</h3><ul>
+<li>No comentar el caso con el equipo ni identificar a quien denunció.</li>
+<li>No cambiar condiciones laborales de la persona denunciante.</li>
+<li>Dejar la conclusión a quien investiga (empresa o Inspección del Trabajo) y consultar a un abogado laboral antes de cualquier sanción.</li></ul>
+</div></div>
+
+<div id="imp"></div>
+<script>
+const $=id=>document.getElementById(id);
+document.querySelectorAll('.tab').forEach(b=>b.onclick=()=>{document.querySelectorAll('.tab,.pg').forEach(e=>e.classList.remove('on'));b.classList.add('on');$(b.dataset.p).classList.add('on')});
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+function imprimir(h){$('imp').innerHTML=h;setTimeout(()=>window.print(),150)}
+function karin(){const f=$('k-f').value,l=$('k-l').value.trim(),t=$('k-t').value.trim(),r=$('k-r').value.trim(),p=$('k-p').value;
+ const fa=[];if(!f)fa.push('fecha y hora');if(!l)fa.push('lugar');if(r.length<20)fa.push('relato más detallado');if(!t)fa.push('testigos');if(p==='no')fa.push('pruebas, si existen');
+ $('k-o').innerHTML=`<div class="al v"><b>La denuncia se recibe y se tramita.</b></div>`+(fa.length?`<div class="al a">Información pendiente de solicitar: ${fa.join(', ')}. Su ausencia no impide dar curso a la denuncia ni indica que sea falsa.</div>`:`<div class="al v">Ficha completa. Aplicar medidas de resguardo y derivar según el procedimiento.</div>`)+`<button class="btn y" onclick="comprobante()">Generar comprobante para el denunciante (PDF)</button><p style="margin-top:6px">Esta herramienta no guarda la denuncia. Entrega el comprobante al denunciante y archiva la ficha en el sistema oficial de la empresa.</p>`}
+function comprobante(){const fo='K-'+Date.now().toString(36).toUpperCase(),n=new Date().toLocaleString('es-CL');
+ imprimir(`<h2>Comprobante de recepción de denuncia</h2><p><b>Folio:</b> ${fo}<br><b>Recibida:</b> ${esc(n)}</p><table><tr><th>Fecha y hora del hecho</th><td>${esc($('k-f').value||'—')}</td></tr><tr><th>Lugar</th><td>${esc($('k-l').value||'—')}</td></tr><tr><th>Persona denunciada</th><td>${esc($('k-d').value||'—')}</td></tr><tr><th>Testigos</th><td>${esc($('k-t').value||'—')}</td></tr><tr><th>Relato</th><td>${esc($('k-r').value||'—')}</td></tr></table><p>Conserve este comprobante. La empresa debe adoptar medidas de resguardo y derivar o investigar la denuncia dentro de los plazos legales (Ley 21.643). Se prohíben las represalias contra quien denuncia.</p>`)}
+
+/* FALSAS */
+const FP=["La investigación terminó formalmente (empresa o Inspección del Trabajo).","Se entrevistó a denunciante, denunciado y testigos, con registro escrito.","Se revisó toda la evidencia (mensajes, registros, cámaras, documentos).","Hay hechos objetivos que contradicen el relato (no solo falta de pruebas).","Hay indicios de que la persona sabía que lo denunciado era falso.","El informe final concluye expresamente la falsedad.","Se consultó a un abogado laboral antes de decidir."];
+$('fl').innerHTML=FP.map((x,i)=>`<label class="chk"><input type="checkbox" class="fc"><span>${x}</span></label>`).join('');
+document.querySelectorAll('.fc').forEach(c=>c.onchange=()=>{const n=document.querySelectorAll('.fc:checked').length;const o=$('fo');
+ o.className='al '+(n===FP.length?'v':'a');
+ o.textContent=n===FP.length?'Están cubiertos los puntos básicos. La decisión y las medidas corresponden a quien investiga y a asesoría legal.':`${n} de ${FP.length} documentados. Sin esto, no hay base para hablar de mala fe.`});
+</script>
+</body>
+</html>
