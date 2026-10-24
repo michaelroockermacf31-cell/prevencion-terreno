@@ -1,0 +1,10 @@
+<!DOCTYPE html><html lang="es"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Generador de licencias (privado)</title>
+<style>body{font-family:system-ui,sans-serif;background:#0f172a;color:#e2e8f0;padding:20px;max-width:420px;margin:auto}input,button{width:100%;padding:12px;margin:8px 0;border-radius:8px;border:1px solid #475569;font-size:1rem}input{background:#1e293b;color:#fff}button{background:#10b981;color:#fff;font-weight:700;border:0}#o{font-size:1.4rem;font-weight:800;text-align:center;padding:14px;background:#1e293b;border-radius:8px;margin-top:10px}</style></head><body>
+<h2>Generador de licencias</h2><p>Uso privado. No subas este archivo a GitHub ni lo compartas.</p>
+<input id="n" placeholder="Nombre de la licencia (ej: Constructora Sur)"><button onclick="g()">Generar código</button><div id="o"></div><button onclick="navigator.clipboard&&navigator.clipboard.writeText($('o').textContent)" style="background:#3b82f6">Copiar código</button>
+<script>const $=id=>document.getElementById(id);
+function h(s){let a=0xdeadbeef,b=0x41c6ce57;for(let i=0;i<s.length;i++){const c=s.charCodeAt(i);a=Math.imul(a^c,2654435761);b=Math.imul(b^c,1597334677)}a=Math.imul(a^(a>>>16),2246822507)^Math.imul(b^(b>>>13),3266489909);b=Math.imul(b^(b>>>16),2246822507)^Math.imul(a^(a>>>13),3266489909);return (4294967296*(2097151&b)+(a>>>0)).toString(36).toUpperCase().slice(0,8)}
+const SAL="mc-prev-7x93kq";
+function codigo(n){return 'PT-'+h(SAL+n.trim().toLowerCase())}
+function g(){const n=$('n').value.trim();$('o').textContent=n?codigo(n):'Escribe un nombre'}
+</script></body></html>
