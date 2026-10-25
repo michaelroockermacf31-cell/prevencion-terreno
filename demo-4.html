@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Prevención en Terreno (Demo)</title>
+<style>
+:root{--bg:#0f172a;--card:#1e293b;--in:#0f172a;--tx:#e2e8f0;--mu:#94a3b8;--bd:#334155;--bl:#3b82f6;--rd:#ef4444;--gr:#10b981;--ye:#f59e0b;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:light){:root:not([data-theme="dark"]){--bg:#f1f5f9;--card:#fff;--in:#f8fafc;--tx:#0f172a;--mu:#475569;--bd:#cbd5e1}}
+:root[data-theme="dark"]{--bg:#0f172a}
+*{box-sizing:border-box;margin:0;padding:0;font-family:system-ui,sans-serif}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{background:var(--bg);color:var(--tx);padding-bottom:30px}
+header{background:var(--card);padding:14px;text-align:center;font-weight:700;border-bottom:2px solid var(--bl)}
+.tabs{display:flex;overflow-x:auto;background:var(--card)}
+.tab{flex:1 0 auto;padding:12px 14px;background:none;border:0;border-bottom:3px solid transparent;color:var(--mu);font-weight:700;font-size:.85rem}
+.tab.on{color:var(--bl);border-bottom-color:var(--bl)}
+.pg{display:none;padding:14px}.pg.on{display:block}
+.card{background:var(--card);border:1px solid var(--bd);border-radius:10px;padding:14px;margin-bottom:14px}
+h2{font-size:1.1rem;margin-bottom:8px}h3{font-size:.95rem;color:var(--bl);margin:12px 0 4px}
+p,li{font-size:.9rem;line-height:1.5;color:var(--mu)}ul{padding-left:18px}
+label{display:block;margin-top:10px;font-size:.85rem;font-weight:700;color:var(--mu)}
+input,select,textarea{width:100%;padding:10px;border-radius:8px;border:1px solid var(--bd);background:var(--in);color:var(--tx);margin:5px 0;font-size:1rem}
+.btn{width:100%;padding:12px;border:0;border-radius:8px;font-weight:700;font-size:1rem;background:var(--bl);color:#fff;margin-top:10px}
+.btn.g{background:var(--gr)}.btn.y{background:var(--ye);color:#000}.btn.s{background:#64748b}
+.row{display:flex;gap:10px}.row>*{flex:1}
+.box{background:var(--in);border-left:4px solid var(--gr);border-radius:8px;padding:12px;margin-top:10px;white-space:pre-wrap;font-size:.95rem;line-height:1.5;color:var(--tx)}
+.chk{display:flex;gap:10px;align-items:center;padding:8px 0;border-bottom:1px solid var(--bd);font-size:.92rem;color:var(--tx)}
+.chk input{width:20px;height:20px;margin:0}
+canvas{width:100%;height:150px;background:#fff;border-radius:8px;touch-action:none;display:block}
+.timer{font-size:2.4rem;font-weight:800;text-align:center;margin:8px 0}
+.al{padding:10px;border-radius:8px;margin-top:10px;font-size:.9rem}
+.al.r{background:#ef444433;color:var(--tx);border:1px solid var(--rd)}.al.v{background:#10b98133;color:var(--tx);border:1px solid var(--gr)}.al.a{background:#f59e0b33;color:var(--tx);border:1px solid var(--ye)}
+.fl{display:flex;align-items:center;gap:8px;border-bottom:1px solid var(--bd);padding:6px 0;font-size:.88rem;color:var(--tx)}
+.fl img{height:34px;background:#fff;border-radius:4px}
+#imp{display:none}
+@media print{body>*:not(#imp){display:none!important}#imp{display:block;background:#fff;padding:8mm;font-size:12px}#imp *{color:#000!important}#imp img{height:46px}#imp table{width:100%;border-collapse:collapse;margin-bottom:10px}#imp td,#imp th{border:1px solid #000;padding:4px;text-align:left}#imp pre{white-space:pre-wrap;font-family:inherit;margin:8px 0}}
+</style>
+<link rel="manifest" href="manifest-demo.json">
+<meta name="theme-color" content="#0f172a">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Prevención">
+<link rel="icon" type="image/png" href="icon-192.png">
+<link rel="apple-touch-icon" href="icon-192.png">
+</head>
+<body>
+<header>Prevención en Terreno</header>
+<div id="tr" style="display:none;background:#f59e0b;color:#000;text-align:center;padding:6px;font-size:.85rem;font-weight:700"></div>
+<div class="tabs">
+<button class="tab on" data-p="charla">Charla 5 min</button>
+<button class="tab" data-p="ind">Inducción</button>
+<button class="tab" data-p="reg">Registro</button>
+</div>
+
+<!-- CHARLA -->
+<div id="charla" class="pg on">
+<div class="card">
+<h2>Charla de seguridad matutina</h2>
+<p>Para jefe de terreno, supervisor o capataz. Dura 5 minutos: el cronómetro ayuda a no alargarla.</p>
+<label>Quien dicta la charla</label><input id="c-exp" placeholder="Nombre y cargo">
+<label>Tema</label>
+<div class="row"><select id="c-sel"></select><button class="btn" style="flex:0 0 56px;margin:5px 0" onclick="dictarCharla()">🎤</button></div>
+<p>Tip: toca el micrófono y di el tema, por ejemplo «salud mental».</p>
+<button class="btn y" onclick="charla(true)">Tema aleatorio</button>
+<button class="btn" onclick="charla(false)">Generar charla</button>
+<div id="c-out" class="box" style="display:none"></div>
+<div class="timer" id="c-t">05:00</div>
+<div class="row"><button class="btn g" onclick="cron()">Iniciar / pausar</button><button class="btn s" onclick="cronReset()">Reiniciar</button></div>
+<label>Asistentes (uno por línea)</label><textarea id="c-as" rows="4" placeholder="Nombre o RUT"></textarea>
+<button class="btn y" onclick="pdfCharla()">Generar PDF de la charla</button>
+<button class="btn g" onclick="guardarCharla()">Guardar registro de charla</button>
+<button class="btn s" onclick="copiar('c-out')">Copiar charla</button>
+<h3>Charlas registradas</h3><div id="c-h" class="box" style="border-color:var(--bd)"></div>
+</div></div>
+
+<!-- INDUCCION -->
+<div id="ind" class="pg">
+<div class="card">
+<h2>Inducción previa al trabajo</h2>
+<p>Dicta o escribe el trabajo (ej: «trabajo en altura», «espacio confinado»).</p>
+<div class="row"><input id="i-t" placeholder="Tipo de trabajo"><button class="btn" style="flex:0 0 56px;margin:5px 0" onclick="dictar()">🎤</button></div>
+<label>Tipo de trabajo (lista)</label><select id="i-s" onchange="if(this.value){$('i-t').value=this.value;induccion()}"><option value="">Elegir de la lista...</option></select>
+<label>Lugar / frente de trabajo</label><input id="i-lug" placeholder="Ej: Torre B, piso 5">
+<div class="row"><div><label>Dónde se hace</label><select id="i-sit"><option>Terreno</option><option>Casino</option><option>Comedor</option><option>Sala</option><option>Otro</option></select></div><div><label>Duración (min)</label><input id="i-dur" type="number" inputmode="numeric" value="60"></div></div>
+<button class="btn" onclick="induccion()">Crear inducción completa</button>
+<label>Inducción (editable)</label>
+<textarea id="i-txt" rows="12" placeholder="Aquí aparece la inducción completa."></textarea>
+<label>Checklist en terreno</label>
+<div id="i-chk" class="box" style="border-color:var(--bl)">Crea la inducción para ver el checklist.</div>
+</div>
+<div class="card">
+<h2>Firmas</h2>
+<p>Solo dos roles: prevencionista (1 firma) y trabajadores (una por persona). Tras autorizar, la firma se borra para el siguiente.</p>
+<label>Firma como</label>
+<select id="f-rol"><option value="Trabajador">Trabajador</option><option value="Prevencionista">Prevencionista</option></select>
+<label>RUT</label><input id="f-rut" inputmode="text" placeholder="12.345.678-9" autocomplete="off">
+<label>Nombre (opcional)</label><input id="f-nom" placeholder="Nombre">
+<label>Curso o autorización para este trabajo</label><input id="f-cur" placeholder="Ej: Curso trabajo en altura, vigente hasta 12/2026">
+<label class="chk"><input type="checkbox" id="f-ok"><span>Tiene el curso vigente y está autorizado para este trabajo (obligatorio para trabajadores)</span></label>
+<canvas id="cv"></canvas>
+<div class="row"><button class="btn s" onclick="limpiar()">Borrar firma</button><button class="btn g" onclick="autorizar()">Autorizar firma</button></div>
+<div id="f-msg"></div>
+<h3>Firmas registradas (<span id="f-n">0</span>)</h3>
+<div id="f-list" class="box" style="border-color:var(--bd)">Nadie ha firmado aún.</div>
+<button class="btn y" onclick="pdf()">Generar PDF de inducción</button>
+<button class="btn g" onclick="guardarInd()">Guardar en registro</button>
+<button class="btn s" onclick="enviar('w')">Enviar por WhatsApp</button>
+<button class="btn s" onclick="enviar('c')">Enviar por correo</button>
+<button class="btn s" onclick="resumen()">Copiar resumen</button>
+<button class="btn s" onclick="respaldo()">Descargar respaldo (.json)</button>
+<button class="btn s" onclick="nueva()">Nueva inducción (borra firmas)</button>
+<p style="margin-top:8px">En el diálogo de impresión elige «Guardar como PDF». Las firmas quedan guardadas en este dispositivo.</p>
+</div></div>
+
+<!-- REGISTRO -->
+<div id="reg" class="pg">
+<div class="card"><h2>Inducciones de hoy</h2><p>Para supervisor y capataz: revisa si el trabajo ya tiene inducción antes de partir.</p><div id="r-hoy" class="box" style="border-color:var(--bl)"></div></div>
+<div class="card"><h2>Historial</h2><input id="r-q" placeholder="Buscar por trabajo o fecha" oninput="regLista()"><div id="r-l" class="box" style="border-color:var(--bd)"></div></div>
+</div>
+<div id="lock" style="position:fixed;inset:0;background:var(--bg);z-index:99;display:none;align-items:center;justify-content:center;padding:20px"></div>
+<div id="imp"></div>
+<script>
+const $=id=>document.getElementById(id);
+document.querySelectorAll('.tab').forEach(b=>b.onclick=()=>{
+ document.querySelectorAll('.tab,.pg').forEach(e=>e.classList.remove('on'));
+ b.classList.add('on');$(b.dataset.p).classList.add('on');
+ if(b.dataset.p==='ind')ajustar();if(b.dataset.p==='reg'&&window.regLista)regLista();
+});
+function copiar(id){const t=$(id).value||$(id).innerText;try{navigator.clipboard.writeText(t).then(()=>alert('Copiado'),()=>alert('No se pudo copiar'))}catch(e){alert('No se pudo copiar')}}
+
+/* CHARLA */
+const T=[
+["Protección de manos","Muchos accidentes de obra ocurren en las manos.","Usar guantes adecuados a la tarea; no usar herramientas dañadas; guardar el cuchillo cortacartón con la hoja replegada.","¿Qué guante corresponde a tu tarea de hoy?"],
+["Trabajo en altura","Una caída desde baja altura también puede causar lesiones graves.","Arnés revisado, doble cabo, anclaje certificado y zona inferior delimitada. Nunca soltarse del anclaje.","¿Dónde está tu punto de anclaje hoy?"],
+["Orden y aseo","Cables, escombros y clavos en el piso causan tropiezos y cortes.","Limpiar tu zona antes de irte, apilar materiales y retirar clavos de la madera.","¿Qué puedes ordenar ahora en tu frente?"],
+["Fatiga y descanso","El cansancio baja los reflejos y la atención.","Avisa al supervisor si dormiste mal, toma pausas e hidrátate.","¿Alguien hoy no se siente en condiciones?"],
+["Excavaciones y zanjas","Un derrumbe puede ocurrir sin aviso.","No acopiar material al borde, revisar taludes o entibado y mantener escalera de salida.","¿Cuál es tu salida si cede el talud?"],
+["Izaje de cargas","Una carga suspendida puede caer o balancearse.","Nadie bajo la carga, eslingas revisadas, una sola persona da las señales.","¿Quién da las señales hoy?"],
+["Uso de EPP","El EPP es la última barrera: solo funciona si está en buen estado y bien puesto.","Casco con barbiquejo si corresponde, lentes limpios, calzado de seguridad, protección auditiva en ruido.","Revisa tu EPP: ¿alguno está dañado?"],
+["Riesgo eléctrico","Los tableros y alargadores en mal estado causan descargas.","No intervenir instalaciones si no estás autorizado; alargadores sin empalmes y fuera del agua.","¿Hay algún cable pelado en tu zona?"],
+["Salud mental y estrés","El estrés, la ansiedad y la tristeza afectan la atención y aumentan el riesgo de accidentes.","Reconocer señales (irritabilidad, insomnio, desgano, aislamiento), conversar con alguien de confianza y pedir apoyo al supervisor o a la mutualidad. Pedir ayuda es de valientes.","¿Cómo podemos cuidarnos como equipo esta semana?","salud mental estres ansiedad depresion animo emocional"],
+["Alcohol, drogas y medicamentos","Trabajar bajo los efectos de alcohol, drogas o ciertos medicamentos pone en riesgo a todos.","No ingresar con síntomas. Si tomas un remedio que da sueño o mareo, avisa al supervisor. Conocer la política de alcohol y drogas de la empresa.","¿Conoces la política de la empresa?","alcohol drogas medicamentos remedios"],
+["Calor y radiación solar","El calor extremo y el sol causan golpe de calor, deshidratación y quemaduras.","Tomar agua cada 20 minutos, pausas a la sombra, protector solar, ropa liviana de manga larga. Mareo, calambres o piel seca y caliente son señales de alerta.","¿Dónde están el agua y la sombra de hoy?","calor sol uv hidratacion verano insolacion"],
+["Frío, lluvia y viento","El frío y la lluvia aumentan resbalones, hipotermia y fallas de equipos.","Ropa en capas e impermeable, calzado antideslizante, suspender trabajos en altura con viento o lluvia fuerte.","¿Qué trabajos de hoy se ven afectados por el clima?","frio lluvia invierno viento hipotermia clima"],
+["Primeros auxilios","Los primeros minutos después de un accidente son decisivos.","Saber dónde está el botiquín y quiénes están capacitados. Llamar a emergencias. No mover a un accidentado con posible lesión de columna.","¿Dónde está el botiquín y quién llama a emergencias?","primeros auxilios botiquin emergencia accidente herido"],
+["Plan de emergencia y evacuación","En una emergencia no hay tiempo para pensar.","Conocer las vías de evacuación, la zona de seguridad y la señal de alarma. Mantener las vías despejadas. Ante un sismo: mantener la calma, alejarse de bordes y evacuar cuando pase.","¿Cuál es nuestra zona de seguridad?","emergencia evacuacion sismo terremoto zona de seguridad alarma"],
+["Incendios y extintores","Un incendio en obra se propaga rápido por materiales combustibles.","Ubicar los extintores y no bloquearlos. No fumar cerca de combustibles. Para usar un extintor: tirar el seguro, apuntar a la base del fuego, apretar y barrer.","¿Dónde está el extintor más cercano?","incendio extintor fuego combustible"],
+["Manejo manual de cargas","Las lesiones de espalda son de las más frecuentes en obra.","Doblar rodillas, espalda recta, carga pegada al cuerpo. Pedir ayuda o usar carretilla si pesa mucho (el máximo legal es 25 kg; verifica la norma).","¿Qué carga de hoy pide ayuda mecánica?","carga espalda lumbar levantar manual ergonomia peso"],
+["Posturas y pausas activas","Las malas posturas y los movimientos repetidos causan dolores y lesiones.","Cambiar de postura, estirar cada cierto tiempo, no trabajar mucho rato agachado ni con los brazos sobre la cabeza.","Hagamos 1 minuto de estiramiento juntos.","postura pausa activa estiramiento ergonomia dolor"],
+["Ruido y protección auditiva","La pérdida de audición por ruido es permanente.","Usar protección auditiva en zonas ruidosas y verificar que esté bien puesta. Si tienes que gritar para hablar, hay riesgo.","¿Qué equipos de hoy hacen más ruido?","ruido sordera auditiva oido"],
+["Polvo y sílice","Respirar polvo de sílice puede causar una enfermedad pulmonar grave.","Cortar y esmerilar con agua o extracción, usar mascarilla adecuada al riesgo, no barrer en seco.","¿Qué tarea de hoy genera polvo?","polvo silice respirador mascarilla silicosis"],
+["Herramientas manuales y eléctricas","Una herramienta dañada o mal usada causa cortes y golpes.","Revisar antes de usar, usar protecciones y cables en buen estado, desconectar al cambiar discos.","¿Alguna herramienta está dañada?","herramienta herramientas esmeril taladro cortes"],
+["Escaleras portátiles","Muchas caídas ocurren desde escaleras.","Apoyo estable, tres puntos de contacto, ángulo correcto, sobrepasar 1 m el punto de llegada, no usar los dos últimos peldaños ni escalera metálica cerca de electricidad.","¿Tu escalera está en buen estado?","escalera escala portatil"],
+["Andamios","Un andamio mal armado o mal usado es una caída segura.","Usar solo andamios con tarjeta vigente, con barandas, rodapiés y plataformas completas; no sobrecargar ni modificar.","¿El andamio de hoy tiene tarjeta vigente?","andamio andamios"],
+["Aberturas, bordes y barandas","Los bordes de losa y las aberturas sin protección causan caídas graves.","No retirar barandas ni tapas, señalizar y reponer de inmediato si falta una protección.","¿Hay alguna abertura sin protección?","abertura borde baranda losa hoyo"],
+["Maquinaria y peatones","Los atropellos por maquinaria son accidentes muy graves.","Mantener distancia, nunca ubicarse en puntos ciegos, respetar señaleros y vías peatonales.","¿Por dónde circula la maquinaria hoy?","maquinaria camion vehiculos transito atropello"],
+["Señalización y zonas delimitadas","Las señales y barreras existen porque hay un riesgo detrás.","Respetar cintas, conos y letreros. No cruzar zonas delimitadas sin autorización.","¿Qué zonas están delimitadas hoy?","senal senalizacion delimitar cinta conos"],
+["Reporte de incidentes y casi accidentes","Cada casi accidente es un aviso de lo que puede ocurrir.","Reportar de inmediato lo que pasó, sin buscar culpables. Reportar ayuda a corregir antes de que alguien se lesione.","¿Alguien vio algo peligroso esta semana?","incidente reporte casi accidente cuasi"],
+["Accidentes y seguro (Ley 16.744)","Todo accidente laboral debe reportarse a tiempo para tener cobertura.","Avisar de inmediato al supervisor, ir a la mutualidad y nunca ocultar un accidente ni una lesión.","¿Sabes a qué centro de atención ir?","ley 16744 accidente mutualidad seguro derechos"],
+["Buen trato y respeto (Ley Karin)","Todos merecen un trato digno; el acoso y la violencia laboral no se toleran.","Tratar con respeto, evitar bromas ofensivas y saber que existe un canal confidencial para denunciar.","¿Conocemos el canal de denuncia de la empresa?","ley karin acoso buen trato respeto violencia discriminacion"],
+["Atrapamientos y partes móviles","Las partes móviles de las máquinas atrapan manos, ropa y pelo.","No quitar protecciones, apagar y bloquear antes de limpiar o reparar, evitar ropa suelta y cadenas.","¿Qué máquina de hoy tiene partes móviles?","atrapamiento maquina partes moviles bloqueo"],
+["Traslados y conducción","Muchos accidentes ocurren yendo o volviendo del trabajo.","Usar cinturón, no usar el celular al conducir, respetar velocidad y descansar antes de manejar.","¿Cómo vienes y cómo te vas hoy?","conduccion transito trayecto vehiculo cinturon"],
+["Protección de ojos y rostro","Las proyecciones y el polvo pueden causar daño ocular permanente.","Usar lentes o careta según la tarea, mantenerlos limpios y cambiarlos si están rayados.","¿Qué lentes corresponden a tu tarea?","ojos lentes proyeccion careta vista"],
+["Comunicación y trabajo en equipo","Una mala comunicación es causa común de accidentes.","Confirmar las instrucciones, usar señales claras, avisar los cambios del trabajo a todo el equipo.","¿Todos entendieron el trabajo de hoy?","comunicacion equipo instrucciones señales"],
+["Derecho a detener el trabajo","Nadie debe trabajar en condiciones inseguras.","Si algo no es seguro, se detiene el trabajo, se avisa al supervisor y se retoma cuando esté corregido. No habrá represalias.","¿Qué haría cada uno si ve un riesgo?","detener trabajo autocuidado derecho parar"]];
+$('c-sel').innerHTML=T.map((t,i)=>`<option value="${i}">${t[0]}</option>`).join('');
+function charla(r){if(r)$('c-sel').value=Math.floor(Math.random()*T.length);
+ const t=T[$('c-sel').value],e=$('c-exp').value.trim()||'—';const o=$('c-out');o.style.display='block';
+ o.textContent=`TEMA: ${t[0]}\nExpositor: ${e}\n\n1) Por qué importa (1 min)\n${t[1]}\n\n2) Qué hacer (2 min)\n${t[2]}\n\n3) Pregunta al equipo (1 min)\n${t[3]}\n\n4) Cierre (1 min)\nCada uno repite en voz alta su riesgo principal de hoy. Pasar lista y empezar.`;cronReset()}
+let ct=300,ci=null;
+function pinta(){$('c-t').textContent=String(Math.floor(ct/60)).padStart(2,'0')+':'+String(ct%60).padStart(2,'0');$('c-t').style.color=ct===0?'var(--rd)':''}
+function cron(){if(ci){clearInterval(ci);ci=null;return}ci=setInterval(()=>{if(ct>0){ct--;pinta()}else{clearInterval(ci);ci=null}},1000)}
+function cronReset(){clearInterval(ci);ci=null;ct=300;pinta()}
+
+/* INDUCCION */
+function dictar(){const R=window.SpeechRecognition||window.webkitSpeechRecognition;
+ if(!R){alert('Tu navegador no permite dictado. Escribe el trabajo.');return}
+ try{const r=new R();r.lang='es-CL';r.onresult=e=>{$('i-t').value=e.results[0][0].transcript;induccion()};r.onerror=()=>alert('No se pudo escuchar.');r.start()}catch(e){alert('Dictado no disponible.')}}
+const COM="Antes de partir: charla de 5 min, EPP completo y en buen estado, herramientas revisadas, conocer vías de evacuación, ubicación de botiquín y extintor, y a quién avisar en una emergencia. Si algo cambia o hay duda: DETENER el trabajo y avisar al supervisor.";
+const IND=[
+{k:['confinad','estanque','cámara','camara'],n:'TRABAJO EN ESPACIO CONFINADO',p:["Permiso de trabajo firmado antes de entrar.","Medición de gases (oxígeno, inflamables, tóxicos) antes y durante el trabajo.","Ventilación forzada si corresponde.","Vigía externo permanente: no entra, mantiene comunicación y llama a emergencias.","Equipo de rescate: arnés, tripié y línea de vida. El rescate lo hace personal capacitado; nadie entra a rescatar sin equipo.","Aislamiento de energías (bloqueo y etiquetado) y de líneas de fluidos.","Iluminación y herramientas aptas para el ambiente.","Evacuación inmediata ante alarma, mareo o mala lectura de gases."],c:["Permiso firmado","Gasómetro calibrado","Ventilación operativa","Vigía asignado y comunicado","Equipo de rescate en sitio","Energías bloqueadas","Botiquín despejado"]},
+{k:['altura','techo','escala'],n:'TRABAJO EN ALTURA',p:["Permiso de trabajo en altura firmado.","Revisar arnés (costuras, hebillas), doble cabo y línea de vida.","Anclaje certificado, siempre conectado al desplazarse.","Andamios inspeccionados y con tarjeta vigente; barandas y rodapiés completos.","Delimitar zona inferior; no lanzar herramientas ni materiales.","Herramientas amarradas.","No trabajar con viento fuerte, lluvia o mala visibilidad.","Rescate en caída: no mover al accidentado, llamar a emergencias y aplicar plan de rescate en suspensión."],c:["Permiso firmado","Arnés y doble cabo revisados","Anclaje verificado","Andamio con tarjeta","Zona inferior delimitada","Plan de rescate conocido"]},
+{k:['izaje','grúa','grua','pluma','camión pluma'],n:'MANIOBRA DE IZAJE',p:["Plan de izaje conocido; peso de la carga y capacidad del equipo verificados.","Revisión de eslingas, grilletes y ganchos (código de color vigente).","Terreno estable y nivelado; estabilizadores desplegados.","Rigger único con señales claras; operador certificado.","Zona de exclusión: nadie bajo la carga ni en su radio de giro.","Distancia segura a líneas eléctricas.","Suspender si hay viento fuerte o pérdida de comunicación."],c:["Eslingas y grilletes revisados","Capacidad verificada","Estabilizadores","Rigger designado","Zona de exclusión","Líneas eléctricas verificadas"]},
+{k:['excav','zanja','fundaci','talud','drenaje'],n:'EXCAVACIONES Y FUNDACIONES',p:["Revisar servicios enterrados (agua, gas, electricidad) antes de excavar.","Taludes o entibado según profundidad y tipo de suelo.","Acopio y maquinaria alejados del borde.","Delimitar con baranda o malla y señalizar.","Escalera o rampa de salida cercana a cada trabajador.","Vigilar grietas, filtraciones o desprendimientos.","Tránsito de maquinaria con señalero; nadie en radio de giro."],c:["Servicios enterrados ubicados","Talud o entibado revisado","Perímetro delimitado","Escalera de salida","Acopio alejado","Señalero asignado"]},
+{k:['caliente','solda','soldad','esmeril','corte'],n:'TRABAJO EN CALIENTE',p:["Permiso de trabajo en caliente firmado.","Retirar o proteger materiales combustibles en 10 m.","Extintor adecuado a mano y vigía de fuego durante y después del trabajo.","Pantalla facial, guantes y ropa resistente al fuego.","Cilindros fijos, con válvulas y mangueras revisadas.","Ventilación para humos de soldadura.","Mantener vigilancia al terminar, según el permiso."],c:["Permiso firmado","Combustibles retirados","Extintor presente","Vigía de fuego","EPP de soldador","Cilindros asegurados"]},
+{k:['eléctr','electr','tablero'],n:'TRABAJO ELÉCTRICO',p:["Solo personal autorizado y competente.","Bloqueo y etiquetado de la fuente de energía.","Verificar ausencia de tensión con instrumento.","Herramientas y EPP aislados y vigentes.","Prohibido trabajar en zona húmeda sin protección diferencial.","Señalizar y delimitar el área."],c:["Personal autorizado","Bloqueo y etiquetado","Ausencia de tensión verificada","EPP dieléctrico vigente","Área señalizada"]},
+{k:['andamio'],n:'MONTAJE Y USO DE ANDAMIOS',p:["Montaje solo por personal capacitado y bajo supervisión.","Base firme y nivelada, con soleras o tornillos de nivelación.","Plataformas completas, barandas, rodapiés y acceso seguro.","Arriostramiento y anclaje a la estructura según el diseño.","Inspección diaria y tarjeta de estado (verde = habilitado).","Arnés conectado durante el montaje y desmontaje.","No sobrecargar ni retirar piezas; delimitar la zona inferior."],c:["Personal capacitado","Base nivelada","Barandas y rodapiés","Arriostramiento","Tarjeta vigente","Zona inferior delimitada"]},
+{k:['carga manual','cargas','levantar','acopio'],n:'MANIPULACIÓN MANUAL Y ACOPIO DE MATERIALES',p:["Revisar el peso y pedir ayuda o usar carretilla si es necesario.","Técnica correcta: rodillas flexionadas, espalda recta, carga cerca del cuerpo.","Rutas de transporte despejadas y bien iluminadas.","Apilar de forma estable, sin superar la altura segura.","Guantes y calzado de seguridad.","No acopiar sobre bordes ni bloquear vías de evacuación."],c:["Ayuda mecánica disponible","Ruta despejada","Acopio estable","Guantes y calzado"]},
+{k:['membrana','impermeab','soplete'],n:'INSTALACIÓN DE MEMBRANA / IMPERMEABILIZACIÓN',p:["Permiso de trabajo en caliente si se usa soplete; extintor y vigía de fuego.","Revisar mangueras, regulador y cilindro de gas (fijo, vertical, lejos de la llama).","Si la cubierta es alta: línea de vida, barandas o redes perimetrales.","Retirar o proteger materiales combustibles y aislaciones cercanas.","EPP: guantes térmicos, calzado, lentes, ropa de algodón o ignífuga y mascarilla para vapores.","No trabajar con lluvia, humedad en el soporte ni viento fuerte.","Almacenar rollos y cilindros en zona ventilada y señalizada.","Al terminar: revisar focos de calor y mantener vigilancia el tiempo que indique el permiso."],c:["Permiso en caliente","Extintor y vigía","Cilindro y mangueras revisados","Protección perimetral o línea de vida","Combustibles retirados","EPP térmico"]},
+{k:['hormig','moldaje','enfierr','concreto'],n:'HORMIGONADO, MOLDAJE Y ENFIERRADURA',p:["Revisar moldajes, puntales y apuntalamiento antes de hormigonar.","Cubrir con protecciones las puntas de fierro expuestas.","Bomba y mangueras: personal capacitado, uniones aseguradas, nadie frente a la descarga.","Pasarelas y plataformas con baranda para circular sobre la armadura.","Protección en bordes de losa y aberturas.","Lentes y guantes contra salpicaduras de hormigón.","Respetar tiempos de desmolde."],c:["Moldaje y puntales revisados","Puntas de fierro protegidas","Bomba y mangueras aseguradas","Pasarelas con baranda","Bordes y aberturas protegidos"]},
+{k:['demol'],n:'DEMOLICIÓN',p:["Plan de demolición y secuencia aprobados.","Cortar y verificar servicios (electricidad, agua, gas).","Delimitar y señalizar el radio de caída de material.","Protección respiratoria y auditiva; control de polvo.","Revisar la estabilidad de estructuras vecinas.","Nadie bajo elementos que se demuelen; un responsable de maniobras.","Retiro ordenado de escombros."],c:["Servicios cortados","Zona delimitada","Protección respiratoria","Estructura verificada","Responsable de maniobra"]},
+{k:['maquinaria','bulldozer','cargador','manitou','horquilla'],n:'OPERACIÓN DE MAQUINARIA',p:["Operador con licencia y autorización vigentes.","Revisión diaria del equipo (frenos, luces, alarma de retroceso, cinturón).","Señalero en maniobras de retroceso y zonas con peatones.","Separar vías de maquinaria y de peatones.","Respetar capacidad de carga y velocidad.","Nadie en el radio de giro; estacionar con freno y pala abajo.","Distancia segura a líneas eléctricas y bordes de excavación."],c:["Licencia del operador","Revisión diaria hecha","Alarma de retroceso","Señalero asignado","Vías separadas"]},
+{k:['químico','quimico','pintura','solvente','pegamento'],n:'MANIPULACIÓN DE SUSTANCIAS QUÍMICAS',p:["Leer la hoja de seguridad (HDS) y la etiqueta.","EPP según HDS: guantes, lentes, respirador.","Ventilar el área; no fumar ni generar chispas cerca.","No trasvasijar a envases sin rotular.","Almacenar separado y señalizado.","Conocer primeros auxilios y la ducha o lavaojos más cercano.","Derrames: avisar, contener con material absorbente y no usar agua sin indicación."],c:["HDS disponible","EPP según HDS","Área ventilada","Envases rotulados","Lavaojos ubicado"]}];
+function induccion(){const t=$('i-t').value.toLowerCase().trim();if(!t){alert('Indica el trabajo.');return}
+ const m=IND.find(x=>x.k.some(k=>t.includes(k)));const lug=$('i-lug').value.trim()||'—';
+ const n=m?m.n:'INDUCCIÓN GENERAL: '+t.toUpperCase();
+ const p=m?m.p:["Describir los pasos de la tarea y sus riesgos con el supervisor.","Definir controles para cada riesgo antes de comenzar.","Mantener el área limpia y señalizada.","Reportar de inmediato cualquier condición insegura."];
+ const c=m?m.c:["EPP básico completo","Área limpia y señalizada","Riesgos de la tarea identificados","Botiquín y extintor ubicados"];
+ $('i-txt').value=`${n}\nLugar: ${lug}\nFecha: ${new Date().toLocaleDateString('es-CL')}\n\nMEDIDAS DE SEGURIDAD\n`+p.map((x,i)=>`${i+1}. ${x}`).join('\n')+`\n\nGENERAL\n${COM}\n\nVerificar los requisitos con la normativa vigente (DS 594 y la que aplique) y con el mandante.`;
+ $('i-chk').innerHTML=c.map(x=>`<label class="chk"><input type="checkbox"><span>${x}</span></label>`).join('');}
+
+/* FIRMAS */
+const cv=$('cv'),cx=cv.getContext('2d');let dib=false,tiene=false;
+function ajustar(){const w=cv.offsetWidth,h=cv.offsetHeight;if(w&&(cv.width!==w||cv.height!==h)){cv.width=w;cv.height=h;tiene=false}}
+function pos(e){const r=cv.getBoundingClientRect();return[e.clientX-r.left,e.clientY-r.top]}
+cv.addEventListener('pointerdown',e=>{ajustar();dib=true;cv.setPointerCapture(e.pointerId);const[x,y]=pos(e);cx.beginPath();cx.moveTo(x,y);cx.lineWidth=2.5;cx.lineCap='round';cx.strokeStyle='#000'});
+cv.addEventListener('pointermove',e=>{if(!dib)return;const[x,y]=pos(e);cx.lineTo(x,y);cx.stroke();tiene=true});
+['pointerup','pointercancel'].forEach(v=>cv.addEventListener(v,()=>dib=false));
+function limpiar(){cx.clearRect(0,0,cv.width,cv.height);tiene=false}
+function rutOk(r){r=r.replace(/[^0-9kK]/g,'').toUpperCase();if(r.length<8||r.length>9)return null;const d=r.slice(-1),n=r.slice(0,-1);let s=0,m=2;for(let i=n.length-1;i>=0;i--){s+=+n[i]*m;m=m===7?2:m+1}const v=11-s%11,e=v===11?'0':v===10?'K':String(v);return e===d?n.replace(/\B(?=(\d{3})+(?!\d))/g,'.')+'-'+d:null}
+$('f-rut').addEventListener('blur',()=>{const f=rutOk($('f-rut').value);if(f)$('f-rut').value=f});
+let F=ld('F',[]);
+function msg(t,c){$('f-msg').innerHTML=`<div class="al ${c}">${t}</div>`}
+function autorizar(){const rol=$('f-rol').value,rut=rutOk($('f-rut').value);
+ if(!rut){msg('RUT inválido. Revisa el número y el dígito verificador.','r');return}
+ if(rol==='Trabajador'&&window.LIC&&LIC.m>0&&F.filter(f=>f.rol==='Trabajador').length>=LIC.m&&!F.some(f=>f.rol==='Trabajador'&&f.rut===rut)){msg('Tu licencia permite hasta '+LIC.m+' trabajadores por inducción.','r');return}
+ if(!tiene){msg('Falta la firma en el recuadro.','r');return}
+ if(rol==='Trabajador'&&F.some(f=>f.rol==='Trabajador'&&f.rut===rut)){msg('Ese RUT ya firmó.','r');return}
+ if(rol==='Trabajador'&&(!$('f-ok').checked||!$('f-cur').value.trim())){msg('Solo firman quienes tienen el curso vigente: indica el curso y confirma.','r');return}
+ if(rol==='Prevencionista')F=F.filter(f=>f.rol!=='Prevencionista');
+ F.push({rol,rut,nom:$('f-nom').value.trim(),cur:rol==='Trabajador'?$('f-cur').value.trim():'',img:cv.toDataURL(),h:new Date().toLocaleString('es-CL')});
+ limpiar();$('f-rut').value='';$('f-nom').value='';$('f-ok').checked=false;sv('F',F);msg('Firma registrada. Puede firmar el siguiente.','v');lista()}
+function lista(){$('f-n').textContent=F.length;$('f-list').innerHTML=F.length?F.map(f=>`<div class="fl"><img src="${f.img}" alt="firma"><span><b>${f.rol}</b><br>${f.rut}${f.nom?' · '+f.nom:''}${f.cur?'<br>Curso: '+f.cur:''}</span></div>`).join(''):'Nadie ha firmado aún.'}
+function txtResumen(){const p=F.find(f=>f.rol==='Prevencionista'),w=F.filter(f=>f.rol==='Trabajador');
+ return $('i-txt').value+`\n\nINDUCCIÓN: ${$('i-sit').value}, ${$('i-dur').value} min, ${new Date().toLocaleDateString('es-CL')}\nPrevencionista: ${p?p.rut+(p.nom?' '+p.nom:''):'PENDIENTE'}\nTrabajadores firmados (${w.length}):\n`+w.map(f=>`- ${f.rut}${f.nom?' '+f.nom:''} · Curso: ${f.cur}`).join('\n')}
+function resumen(){if(!$('i-txt').value){alert('Crea primero la inducción.');return}try{navigator.clipboard.writeText(txtResumen()).then(()=>alert('Resumen copiado'),()=>alert('No se pudo copiar'))}catch(e){alert('No se pudo copiar')}}
+function enviar(m){if(!$('i-txt').value){alert('Crea primero la inducción.');return}if(!F.length){alert('Faltan firmas.');return}const t=txtResumen(),n=$('i-txt').value.split('\n')[0];
+ if(m==='w')window.open('https://wa.me/?text='+encodeURIComponent(t),'_blank');else location.href='mailto:?subject='+encodeURIComponent('Informe de inducción: '+n)+'&body='+encodeURIComponent(t)}
+let REG=ld('REG',[]);
+function guardarInd(){if(!$('i-txt').value){alert('Crea primero la inducción.');return}const p=F.find(f=>f.rol==='Prevencionista'),w=F.filter(f=>f.rol==='Trabajador');
+ if(!p||!w.length){alert('Se necesita la firma del prevencionista y de al menos un trabajador.');return}
+ REG.push({d:new Date().toLocaleDateString('es-CL'),h:new Date().toLocaleTimeString('es-CL',{hour:'2-digit',minute:'2-digit'}),t:$('i-txt').value.split('\n')[0],l:$('i-lug').value,s:$('i-sit').value,m:$('i-dur').value,p:p.rut,w:w.map(f=>f.rut)});sv('REG',REG);alert('Inducción guardada en el registro.')}
+function regLista(){const hoy=new Date().toLocaleDateString('es-CL'),q=nrm($('r-q').value||'');
+ $('r-hoy').innerHTML=IND.map(x=>{const r=REG.filter(r=>r.d===hoy&&r.t.startsWith(x.n));return r.length?`✅ ${x.n}: ${r.reduce((a,b)=>a+b.w.length,0)} trabajadores`:`⚪ ${x.n}: sin inducción registrada hoy`}).join('<br>');
+ const l=REG.slice().reverse().filter(r=>!q||nrm(r.t+' '+r.d+' '+r.l).includes(q));
+ $('r-l').innerHTML=l.length?l.map(r=>`<div class="fl"><span><b>${esc(r.t)}</b><br>${r.d} ${r.h} · ${esc(r.s)} · ${r.m} min${r.l?' · '+esc(r.l):''}<br>${r.w.length} trabajadores</span></div>`).join(''):'Sin registros.'}
+
+function ld(k,d){try{return JSON.parse(localStorage.getItem('pt_'+k))||d}catch(e){return d}}
+function sv(k,v){try{localStorage.setItem('pt_'+k,JSON.stringify(v))}catch(e){}}
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+$('i-s').innerHTML+=IND.map(x=>`<option value="${x.k[0]}">${x.n}</option>`).join('');
+const iS=ld('ind',{});if(iS.t)$('i-t').value=iS.t;if(iS.l)$('i-lug').value=iS.l;if(iS.x)$('i-txt').value=iS.x;if(iS.s)$('i-sit').value=iS.s;if(iS.d)$('i-dur').value=iS.d;
+function gInd(){sv('ind',{t:$('i-t').value,l:$('i-lug').value,x:$('i-txt').value,s:$('i-sit').value,d:$('i-dur').value})}
+['i-t','i-lug','i-txt','i-sit','i-dur'].forEach(id=>$(id).addEventListener('input',gInd));
+const _i=induccion;induccion=function(){_i();gInd()};
+lista();
+function imprimir(h){$('imp').innerHTML=h;setTimeout(()=>window.print(),150)}
+function pdf(){if(!$('i-txt').value){alert('Crea primero la inducción.');return}
+ const p=F.find(f=>f.rol==='Prevencionista'),w=F.filter(f=>f.rol==='Trabajador');
+ if(!p){alert('Falta la firma del prevencionista.');return}
+ if(!w.length){alert('Falta al menos un trabajador firmado.');return}
+ const row=f=>`<tr><td>${esc(f.rut)}</td><td>${esc(f.nom||'')}</td><td>${esc(f.cur||'')}</td><td>${esc(f.h)}</td><td><img src="${f.img}"></td></tr>`;
+ const hd='<tr><th>RUT</th><th>Nombre</th><th>Curso</th><th>Fecha</th><th>Firma</th></tr>';
+ imprimir(`<h2>Registro de inducción de seguridad</h2><p>Lugar de la inducción: ${esc($('i-sit').value)} · Duración: ${esc($('i-dur').value)} min · Fecha: ${new Date().toLocaleDateString('es-CL')}</p><pre>${esc($('i-txt').value)}</pre><h3>Prevencionista</h3><table>${hd}${row(p)}</table><h3>Trabajadores (${w.length})</h3><table>${hd}${w.map(row).join('')}</table>`)}
+function nueva(){if(confirm('¿Borrar las firmas para iniciar otra inducción?')){F=[];sv('F',F);lista();$('f-msg').innerHTML=''}}
+let CH=ld('CH',[]);
+const nrm=x=>x.normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase();
+function dictarCharla(){const Rc=window.SpeechRecognition||window.webkitSpeechRecognition;
+ if(!Rc){alert('Tu navegador no permite dictado. Elige el tema de la lista.');return}
+ try{const r=new Rc();r.lang='es-CL';r.onresult=e=>{const d=e.results[0][0].transcript;const ws=nrm(d).split(/\s+/).filter(w=>w.length>3&&!['charla','crear','creame','crea','seguridad','sobre','tema','para'].includes(w));
+  let b=-1,bs=0;T.forEach((t,i)=>{const h=nrm(t[0]+' '+(t[4]||''));const sc=ws.filter(w=>h.includes(w)).length;if(sc>bs){bs=sc;b=i}});
+  if(b<0){alert('No tengo el tema «'+d+'». Elige uno de la lista.');return}
+  $('c-sel').value=b;charla(false)};r.onerror=()=>alert('No se pudo escuchar.');r.start()}catch(e){alert('Dictado no disponible.')}}
+function histCharla(){$('c-h').innerHTML=CH.length?CH.slice().reverse().slice(0,10).map(c=>`<div class="fl"><span><b>${esc(c.t)}</b> · ${esc(c.f)}<br>${esc(c.e||'—')} · ${c.a.split('\n').filter(Boolean).length} asistentes</span></div>`).join(''):'Sin registros.'}
+function guardarCharla(){if(!$('c-out').textContent){alert('Genera primero la charla.');return}
+ CH.push({f:new Date().toLocaleString('es-CL'),e:$('c-exp').value.trim(),t:T[$('c-sel').value][0],a:$('c-as').value});sv('CH',CH);histCharla();alert('Charla guardada.')}
+function pdfCharla(){const o=$('c-out').textContent;if(!o){alert('Genera primero la charla.');return}
+ const as=$('c-as').value.split('\n').map(x=>x.trim()).filter(Boolean);if(!as.length){alert('Anota los asistentes.');return}
+ imprimir(`<h2>Registro de charla de seguridad</h2><p>Fecha: ${new Date().toLocaleDateString('es-CL')}</p><pre>${esc(o)}</pre><table><tr><th>N°</th><th>Asistente</th><th>Firma</th></tr>${as.map((a,i)=>`<tr><td>${i+1}</td><td>${esc(a)}</td><td style="height:34px"></td></tr>`).join('')}</table>`)}
+function respaldo(){const b=new Blob([JSON.stringify({firmas:F,charlas:CH,induccion:ld('ind',{})})],{type:'application/json'});const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download='respaldo-prevencion.json';a.click()}
+histCharla();
+const WA='';const DIAS=7;
+const PUB={"kty":"EC","x":"reIygAle_2oxL5fATpSSTBYjUBqWfvE5IJu92AXDBNU","y":"FY9KOfWCSQX6YHbCdvmwdrC2n4Yc1Pr55y3LRqJROHY","crv":"P-256"};
+const b64u=s=>Uint8Array.from(atob(s.replace(/-/g,'+').replace(/_/g,'/')),c=>c.charCodeAt(0));
+async function verif(code){try{const [p,g]=String(code).trim().split('.');const pb=b64u(p);const k=await crypto.subtle.importKey('jwk',PUB,{name:'ECDSA',namedCurve:'P-256'},false,['verify']);
+ if(!(await crypto.subtle.verify({name:'ECDSA',hash:'SHA-256'},k,b64u(g),pb)))return null;const o=JSON.parse(new TextDecoder().decode(pb));return{n:o.o,p:o.p||'',v:o.e||'',m:o.m||0}}catch(e){return null}}
+const vencida=d=>!!(d.v&&new Date(d.v+'T23:59:59')<new Date());
+const LF=`<label>Código de licencia</label><textarea id="l-c" rows="4" autocapitalize="off" spellcheck="false" placeholder="Pega aquí el código que recibiste" style="font-size:.8rem"></textarea><button class="btn g" onclick="activar()">Activar licencia</button>`;
+function pant(t,p,x){const l=$('lock');l.style.display='flex';$('tr').style.display='none';l.innerHTML=`<div class="card" style="max-width:340px;width:100%;text-align:center"><h2>${t}</h2><p>${p}</p>${x}</div>`}
+function formLic(){pant('Activar licencia','Pega el código que te entregaron.',LF+`<button class="btn s" onclick="trial()">Volver</button>`)}
+async function activar(){const c=$('l-c').value.trim(),d=await verif(c);if(!d){alert('Código inválido.');return}if(vencida(d)){alert('Esta licencia está vencida.');return}sv('lic',{c});trial()}
+async function trial(){const L=ld('lic',null),b=$('tr'),l=$('lock');let venc=false;
+ if(L){const d=await verif(L.c);if(d&&!vencida(d)){window.LIC=d;l.style.display='none';b.style.cssText='display:block;background:#10b981;color:#fff;text-align:center;padding:6px;font-size:.85rem;font-weight:700';b.textContent='Licencia: '+d.n+(d.p?' · '+d.p:'')+(d.v?' · vence '+d.v:'');return}if(d)venc=true}
+ if(venc){pant('Licencia vencida','Pide un código nuevo para seguir usándola.',LF+(WA?`<a class="btn" style="display:block;text-decoration:none;margin-top:10px" href="https://wa.me/${WA}">Contactar para renovar</a>`:''));return}
+ const t=ld('trial',null);
+ if(!t){pant('Prevención en Terreno',`Prueba gratis ${DIAS} días con todas las funciones.`,`<button class="btn g" onclick="iniciar()">Iniciar prueba de ${DIAS} días</button><button class="btn s" onclick="formLic()">Ya tengo licencia</button>`);return}
+ const q=DIAS-Math.floor((Date.now()-t)/864e5);
+ if(q<=0){pant('Prueba terminada','Activa una licencia para seguir usándola.',LF+(WA?`<a class="btn" style="display:block;text-decoration:none;margin-top:10px" href="https://wa.me/${WA}">Contactar para arrendar</a>`:''));return}
+ l.style.display='none';b.style.cssText='display:flex;justify-content:space-between;align-items:center;gap:8px;background:#f59e0b;color:#000;padding:6px 10px;font-size:.85rem;font-weight:700';
+ b.innerHTML=`<span>Prueba gratuita: quedan ${q} día${q>1?'s':''}.</span><button onclick="formLic()" style="background:none;border:2px solid #000;border-radius:6px;padding:4px 8px;font-weight:700">Activar licencia</button>`}
+function iniciar(){sv('trial',Date.now());trial()}
+trial();
+</script>
+<script>
+if('serviceWorker' in navigator)addEventListener('load',function(){navigator.serviceWorker.register('sw.js').catch(function(){})});
+var ip=null;addEventListener('beforeinstallprompt',function(e){e.preventDefault();ip=e;var b=document.createElement('div');b.style.cssText='display:flex;justify-content:space-between;align-items:center;gap:8px;background:#10b981;color:#fff;padding:8px 12px;font-weight:700;font-size:.9rem';b.innerHTML='<span>Instala la app en tu teléfono.</span><button style="background:none;border:2px solid #fff;color:#fff;border-radius:6px;padding:4px 10px;font-weight:700">Instalar</button>';b.querySelector('button').onclick=function(){ip.prompt();ip.userChoice.then(function(){b.remove()})};document.body.insertBefore(b,document.body.firstChild)});
+</script>
+</body>
+</html>
