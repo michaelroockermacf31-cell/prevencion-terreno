@@ -270,7 +270,7 @@ function pdfCharla(){const o=$('c-out').textContent;if(!o){alert('Genera primero
  imprimir(`<h2>Registro de charla de seguridad</h2><p>Fecha: ${new Date().toLocaleDateString('es-CL')}</p><pre>${esc(o)}</pre><table><tr><th>N°</th><th>Asistente</th><th>Firma</th></tr>${as.map((a,i)=>`<tr><td>${i+1}</td><td>${esc(a)}</td><td style="height:34px"></td></tr>`).join('')}</table>`)}
 function respaldo(){const b=new Blob([JSON.stringify({firmas:F,charlas:CH,induccion:ld('ind',{})})],{type:'application/json'});const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download='respaldo-prevencion.json';a.click()}
 histCharla();
-const WA='';const DIAS=7;
+const WA='56957577510';const DIAS=7;
 const PUB={"kty":"EC","x":"reIygAle_2oxL5fATpSSTBYjUBqWfvE5IJu92AXDBNU","y":"FY9KOfWCSQX6YHbCdvmwdrC2n4Yc1Pr55y3LRqJROHY","crv":"P-256"};
 const b64u=s=>Uint8Array.from(atob(s.replace(/-/g,'+').replace(/_/g,'/')),c=>c.charCodeAt(0));
 async function verif(code){try{const [p,g]=String(code).trim().split('.');const pb=b64u(p);const k=await crypto.subtle.importKey('jwk',PUB,{name:'ECDSA',namedCurve:'P-256'},false,['verify']);
